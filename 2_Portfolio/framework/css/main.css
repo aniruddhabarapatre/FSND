@@ -9,10 +9,16 @@
   box-sizing: border-box;
 }
 
+@media only screen and (max-width: 300px) {
+  p {
+    background-color: blue;
+  }
+}
+
 .grid {
-    margin: 0 auto;
-    max-width: 1200px;
-    width: 100%;
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 100%;
 }
 
 .row {
