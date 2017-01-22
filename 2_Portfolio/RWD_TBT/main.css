@@ -19,6 +19,10 @@ header, nav, footer, section, article, div {
   box-sizing: border-box;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 ul {
   list-style: none;
   padding: 0;
@@ -67,8 +71,8 @@ ul {
 
 .header__title {
   font-weight: 300;
-  font-size: 4em;
-  margin: 0.5em 0.25em;
+  font-size: 3em;
+  margin: 0.75em 0.25em;
   display: inline-block;
   color: #212121;
 }
@@ -145,7 +149,7 @@ main {
   position: relative;
   background-image: url("./images/dog.jpg");
   background-size: cover;
-  height: 300px;
+  min-height: 300px;
 }
 
 .hero article {
@@ -154,7 +158,6 @@ main {
   background-color: rgba(0, 0, 0, 0.7);
   position: absolute;
   bottom: 0;
-  height: 40%;
   width: 100%;
   color: #fff;
   padding: 1em;
@@ -168,7 +171,6 @@ main {
  */
 
 .top-news {
-  max-height: 300px;
   border-bottom: 1px solid #E0E0E0;
   padding: 1em;
   width: 100%;
@@ -234,6 +236,14 @@ main {
   background-color: #78909C;
 }
 
+.scores__table tr:nth-child(1) th:nth-child(3) {
+  text-align: right;
+}
+
+.scores__table tr:nth-child(1) th:nth-child(5) {
+  text-align: left;
+}
+
 .scores__table tr:nth-child(odd) td {
   background-color: #fff;
 }
@@ -250,8 +260,8 @@ main {
   text-align: right;
 }
 
-.scores__table td:nth-child(2),
-.scores__table td:nth-child(5) {
+.scores__table td:nth-child(1),
+.scores__table td:nth-child(2) {
   text-align: center;
 }
 
@@ -272,7 +282,7 @@ main {
   font-size: 1.5em;
 }
 
-.weather__desc {
+.weather__ {
   display: block;
   font-size: 1.2em;
 }
