@@ -19,7 +19,7 @@
   .header__title {
     margin-left: 0;
     font-size: 2em;
-    vertical-align: bottom;
+    vertical-align: bottom; 
   }
   .nav {
     z-index: 10;
