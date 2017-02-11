@@ -24,12 +24,19 @@ module.exports = function(grunt) {
         'Gruntfile.js',
         config.jsSrcDir + '*.js'
       ]
+    },
+    watch: {
+      sass: {
+        files: config.sassDir + '**/*.scss',
+        tasks: ['sass']
+      }
     }
   });
 
   grunt.registerTask('default', [
     'jshint',
     'sass',
-    'concat'
+    'concat',
+    'watch'
   ]);
 };
