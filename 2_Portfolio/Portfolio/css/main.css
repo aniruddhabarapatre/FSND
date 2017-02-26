@@ -1,21 +1,24 @@
-@media only screen and (max-width: 300px) {
+body {
+  font-family: 'Lato', sans-serif;
+}
 
+@media only screen and (max-width: 300px) {
+  .container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+  }
 }
 
 .container {
   display: -webkit-flex;
   display: flex;
-}
-
-.grid {
-  margin: 0 auto;
-  max-width: 1200px;
-  width: 100%;
+  margin-top: 2%;
 }
 
 .row {
   width: 100%;
-  margin-bottom: 20px;
   display: flex;
 }
 
@@ -24,6 +27,7 @@
   display: flex;
   -webkit-flex-direction: column;
   flex-direction: column;
+  margin: 12% 5%;
 }
 
 #lightblue, #darkblue, #grey {
@@ -43,4 +47,12 @@
 
 #grey {
   background-color: #7d97ad;
+}
+
+#brandlogo {
+  padding-top: 5%;
+}
+
+hr {
+  border: 2px solid #7d97ad;
 }
