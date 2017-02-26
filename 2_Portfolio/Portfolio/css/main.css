@@ -1,55 +1,26 @@
 body {
   font-family: 'Lato', sans-serif;
-}
-
-@media only screen and (max-width: 300px) {
-  .container {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-  }
+  font-weight: 300;
+  color: #2d3c49;
 }
 
 .container {
-  display: -webkit-flex;
-  display: flex;
   margin-top: 2%;
 }
 
-.row {
-  width: 100%;
-  display: flex;
+.text-muted {
+  color: #7d97ad;
 }
 
-.sidebar {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  margin: 12% 5%;
+.text-thin {
+  font-weight: 100;
 }
 
-#lightblue, #darkblue, #grey {
-  width: 75px;
-  height: 75px;
-  border: 1px;
-  margin: 10px;
+.title-super {
+  font-size: 60px;
 }
 
-#lightblue {
-  background-color: #02b3e4;
-}
-
-#darkblue {
-  background-color: #2d3c49;
-}
-
-#grey {
-  background-color: #7d97ad;
-}
-
-#brandlogo {
+.brand-logo {
   padding-top: 5%;
 }
 
