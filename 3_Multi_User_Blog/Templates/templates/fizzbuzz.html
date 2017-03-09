@@ -1,0 +1,13 @@
+{% for num in range(1, n+1) %}
+  <li>
+    {% if num % 3 == 0 and num % 5 == 0 %}
+      FizzBuzz
+    {% elif num % 3 == 0 %}
+      Fizz
+    {% elif num % 5 == 0 %}
+      Buzz
+    {% else %}
+      {{ num }}
+    {% endif %}
+  </li>
+{% endfor %}

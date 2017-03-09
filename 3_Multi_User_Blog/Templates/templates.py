@@ -36,6 +36,8 @@ class Handler(webapp2.RequestHandler):
 
 class MainPage(Handler):
     def get(self):
+        self.render("shopping_list.html")
+        '''
         output = form_html
         output_hidden = ""
 
@@ -51,8 +53,15 @@ class MainPage(Handler):
             output += output_shopping
 
         output = output % output_hidden
-        self.write(output)
+        self.write(output)'''
+
+class FizzBuzzHandler(Handler):
+    def get(self):
+        n = self.request.get('n', 0)
+        n = n and int(n)
+        self.render("fizzbuzz.html", n = n)
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/fizzbuzz', FizzBuzzHandler),
 ], debug=True)
