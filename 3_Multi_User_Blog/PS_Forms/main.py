@@ -23,8 +23,34 @@ class MainPage(Handler):
 
 class Rot13(Handler):
     def get(self):
-        n = self.request.get('n', 0)
-        self.render("rot13.html", n = n)
+        self.render("rot13.html")
+
+    def post(self):
+        input_text = self.request.get_all('input_text')
+        output_text = self.rotate_by_13(input_text)
+        self.render("rot13.html", input_text = output_text)
+
+    def rotate_by_13(self, text):
+        translated_text = ''
+        for ch in text:
+            if ch.isaplha():
+                num = ord(ch) + 13
+
+                if ch.isupper():
+                    if num > ord('Z'):
+                        num -= 26
+                    elif num < ord('A'):
+                        num += 26
+                elif ch.islower():
+                     if num > ord('z'):
+                        num -= 26
+                     elif num < ord('a'):
+                        num += 26
+
+                translated_text += chr(num)
+            else:
+                translated_text += ch
+        return translated_text
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
