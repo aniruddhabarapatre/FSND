@@ -32,8 +32,8 @@ class Rot13(Handler):
 
     def rotate_by_13(self, text):
         translated_text = ''
-        for ch in text:
-            if ch.isaplha():
+        for ch in str(text):
+            if str(ch).isalpha():
                 num = ord(ch) + 13
 
                 if ch.isupper():
