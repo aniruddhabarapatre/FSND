@@ -96,3 +96,15 @@ def query():
 
 print query()
 
+# make the function query() return a list of Links submitted by user 62443, by
+# submission time ascending
+def query_62443():
+    submitted_links = list()
+    for l in links:
+        if l.submitter_id == 62443:
+            submitted_links.append(l)
+
+    return sorted(submitted_links, key=lambda x:x[2])
+
+print query_62443()
+
