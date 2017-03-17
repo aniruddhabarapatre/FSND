@@ -131,3 +131,13 @@ def query2():
     return link.id
 
 print query2()
+
+# QUIZ - make the function query() return a list of the IDs of the links
+# that were submitted by user 62443 sorted by submission time ascending.
+def query3():
+    results = []
+    c = db.execute("select id from links where submitter_id = 62443 order by submitted_time ASC")
+    results = [t[0] for t in c]
+    return results
+
+print query3()
