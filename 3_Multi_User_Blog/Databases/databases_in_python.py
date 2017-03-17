@@ -121,3 +121,13 @@ def query():
     return link.votes
 
 print query()
+
+# QUIZ - make the function query() return the ID of the link that was
+# submitted by user 62443 and has > 1000 votes.
+def query2():
+    c = db.execute("select * from links where submitter_id = 62443 and votes > 1000")
+
+    link = Link(*c.fetchone())
+    return link.id
+
+print query2()
