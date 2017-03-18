@@ -141,3 +141,13 @@ def query3():
     return results
 
 print query3()
+
+# QUIZ - implement the function link_by_id() that takes a link's ID and returns
+# the Link object itself
+def link_by_id(link_id):
+    for link in links:
+        if link.id == link_id:
+            return link
+
+
+print link_by_id(7)
