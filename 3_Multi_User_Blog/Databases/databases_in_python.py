@@ -159,3 +159,15 @@ def link_by_id(link_id):
 
 
 print link_by_id(7)
+
+# Using indexed links for retrieval
+link_index = build_link_index()
+
+def get_link_by_id(link_id):
+    return link_index.get(link_id)
+
+# QUIZ - implement the function add_new_link() that both adds a link to the
+# "links" list and updates the link_index dictionary.
+def add_new_link(link):
+    links.append(link)
+    link_index[link.id] = link
