@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Udacity Blog</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
   <form method="post">
     <label>
       <div>subject</div>
@@ -11,12 +8,12 @@
     </label>
     <label>
       <div>content</div>
-      <input type="text" name="content" value="{{content}}">
+      <textarea name="content">{{content}}</textarea>
     </label>
 
     <div class="error">{{error}}</div>
 
     <input type="submit">
   </form>
-</body>
-</html>
+
+{% endblock %}

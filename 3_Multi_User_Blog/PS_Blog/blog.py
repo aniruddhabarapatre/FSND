@@ -20,6 +20,11 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+class Blog(db.Model):
+    subject = db.StringProperty(required = True)
+    content = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+
 class MainPage(Handler):
     def get(self):
         self.response.write("Udacity Blog!!!")
@@ -36,12 +41,14 @@ class Newpost(Handler):
         content = self.request.get("content")
 
         if subject and content:
+            blog = Blog(subject = subject, content = content)
+            blog.put()
             self.redirect("/")
         else:
             error = "We need both subject and content."
             self.render_newpost(subject, content, error)
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
-    ('/newpost', Newpost),
+    ('/blog', MainPage),
+    ('/blog/newpost', Newpost),
 ], debug=True)
