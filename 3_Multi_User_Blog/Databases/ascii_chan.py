@@ -27,7 +27,8 @@ class Art(db.Model):
 
 class MainPage(Handler):
     def render_front(self, title="", art="", error=""):
-        self.render("front.html", title=title, art=art, error=error)
+        arts = db.GqlQuery("Select * From Art Order by created DESC")
+        self.render("front.html", title=title, art=art, error=error, arts=arts)
 
     def get(self):
         self.render_front()
