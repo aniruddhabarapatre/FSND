@@ -8,12 +8,16 @@
   <form method="post">
     <label>
       <div>title</div>
-      <input type="text" name="title">
+      <input type="text" name="title" value="{{title}}">
     </label>
     <label>
       <div>art</div>
-      <textarea name="art"></textarea>
+      <textarea name="art">{{art}}</textarea>
     </label>
+
+    <div class="error">{{error}}</div>
+
+    <input type="submit">
   </form>
 </body>
 </html>
