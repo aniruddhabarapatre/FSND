@@ -1,4 +1,6 @@
 import os
+import re
+from string import letters
 
 import jinja2
 import webapp2
@@ -20,14 +22,23 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+def blog_key(name = 'default'):
+    return db.Key.from_path('blogs', name)
+
 class Blog(db.Model):
     subject = db.StringProperty(required = True)
     content = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
+    last_modified = db.DateTimeProperty(auto_now_add = True)
+
+    def render(self):
+        self._render_text = self.content.replace('\n', '<br>')
+        return render_str("post.html", p=self)
 
 class MainPage(Handler):
     def get(self):
-        self.response.write("Udacity Blog!!!")
+        blogs = db.GqlQuery("Select * From Blog Order by created DESC limit 10")
+        self.render("blog.html", blogs=blogs)
 
 class Newpost(Handler):
     def render_newpost(self, subject="", content="", error=""):
