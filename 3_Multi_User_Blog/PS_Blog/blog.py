@@ -35,7 +35,7 @@ class Blog(db.Model):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p=self)
 
-class MainPage(Handler):
+class BlogPage(Handler):
     def get(self):
         blogs = db.GqlQuery("Select * From Blog Order by created DESC limit 10")
         self.render("blog.html", blogs=blogs)
@@ -59,7 +59,19 @@ class Newpost(Handler):
             error = "We need both subject and content."
             self.render_newpost(subject, content, error)
 
+class PostPage(Handler):
+    def get(self, post_id):
+        key = db.key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+
+        if not post:
+            self.error(404)
+            return
+
+        self.render("permalink.html", post=post)
+
 app = webapp2.WSGIApplication([
-    ('/blog', MainPage),
+    ('/blog', BlogPage),
     ('/blog/newpost', Newpost),
+    ('/blog/([0-9]+)', PostPage),
 ], debug=True)
