@@ -1,5 +1,5 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {{post}}
+  {{post.render() | safe}}
 {% endblock %}
