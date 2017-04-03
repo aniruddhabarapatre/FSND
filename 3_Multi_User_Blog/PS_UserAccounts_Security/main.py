@@ -140,11 +140,28 @@ class Signup(Handler):
     def done(self, *a, **kw):
         raise NotImplementedError
 
+class Register(Signup):
+    def done(self):
+        #make sure the user doesn't already exist
+        u = User.by_name(self.username)
+        if u:
+            msg = 'That user already exists.'
+            self.render('signup-form.html', error_username = msg)
+        else:
+            u = User.register(self.username, self.password, self.email)
+            u.put()
+
+            self.login(u)
+            self.redirect('/welcome')
+
 class Welcome(Handler):
-    def get():
-        self.render("welcome.html")
+    def get(self):
+        if self.user:
+            self.render('welcome.html', username = self.user.name)
+        else:
+            self.redirect('/signup')
 
 app = webapp2.WSGIApplication([
-    ('/signup', Signup),
+    ('/signup', Register),
     ('/welcome', Welcome),
 ], debug=True)
