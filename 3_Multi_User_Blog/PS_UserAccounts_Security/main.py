@@ -48,6 +48,9 @@ class Handler(webapp2.RequestHandler):
         cookie_val = self.request.cookies.get(name)
         return cookie_val and check_secure_val(cookie_val)
 
+    def login(self, user):
+        self.set_secure_cookie('user_id', str(user.key().id()))
+
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
@@ -90,6 +93,12 @@ class User(db.Model):
                     name = name,
                     pw_hash = pw_hash,
                     email = email)
+
+    @classmethod
+    def login(cls, name, pw):
+        u = cls.by_name(name)
+        if u and valid_pw(name, pw, u.pw_hash):
+            return u
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 def valid_username(username):
@@ -164,6 +173,18 @@ class Welcome(Handler):
 class Login(Handler):
     def get(self):
         self.render('login-form.html')
+
+    def post(self):
+        username = self.request.get('username')
+        password = self.request.get('password')
+
+        u = User.login(username, password)
+        if u:
+            self.login(u)
+            self.redirect('/welcome')
+        else:
+            msg = 'Invalid login'
+            self.render('login-form.html', error = msg)
 
 app = webapp2.WSGIApplication([
     ('/signup', Register),
