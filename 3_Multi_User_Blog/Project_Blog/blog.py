@@ -25,7 +25,14 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+class BlogPage(Handler):
+    def get(self):
+        posts = db.GqlQuery("Select * From Post Order by created DESC limit 10")
+        self.render("blog.html", posts=posts)
+
 # Routes
 app = webapp2.WSGIApplication([
-
+    ('/blog', BlogPage),
+    ('/blog/newpost', Newpost),
+    ('/blog/([0-9]+)', PostPage),
 ], debug=True)
