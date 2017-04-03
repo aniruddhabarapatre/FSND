@@ -161,7 +161,12 @@ class Welcome(Handler):
         else:
             self.redirect('/signup')
 
+class Login(Handler):
+    def get(self):
+        self.render('login-form.html')
+
 app = webapp2.WSGIApplication([
     ('/signup', Register),
     ('/welcome', Welcome),
+    ('/login', Login),
 ], debug=True)
