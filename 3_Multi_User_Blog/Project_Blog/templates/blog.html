@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% for post in blogs %}
+    <div class="row">
+      <div class="col-sm-12">
+        <h3 class="text-left">{{post.subject}}</h3>
+        <p class="text-right">{{post.created.strftime("%b %d, %Y")}}</p>
+        <hr>
+        <p>{{post.content}}</p>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}
