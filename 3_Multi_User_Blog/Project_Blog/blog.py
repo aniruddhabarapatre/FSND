@@ -96,9 +96,15 @@ class Newpost(Handler):
         self.render("newpost.html", subject=subject, content=content, error=error)
 
     def get(self):
-        self.render_newpost()
+        if self.user:
+            self.render_newpost()
+        else:
+            self.redirect("/login")
 
     def post(self):
+        if not self.user:
+            self.redirect('/blog')
+
         subject = self.request.get("subject")
         content = self.request.get("content")
 
