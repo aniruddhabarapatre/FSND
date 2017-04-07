@@ -144,6 +144,13 @@ class Register(Signup):
             self.login(u)
             self.redirect('/welcome')
 
+class Welcome(Handler):
+    def get(self):
+        if self.user:
+            self.render('welcome.html', username = self.user.name)
+        else:
+            self.redirect('/signup')
+
 # Routes
 app = webapp2.WSGIApplication([
     ('/blog', BlogPage),
