@@ -51,6 +51,27 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+    def set_secure_cookie(self, name, val):
+        cookie_val = make_secure_val(val)
+        self.response.headers.add_header(
+            'Set-Cookie',
+            '%s=%s; Path=/' % (name, cookie_val))
+
+    def read_secure_cookie(self, name):
+        cookie_val = self.request.cookies.get(name)
+        return cookie_val and check_secure_val(cookie_val)
+
+    def login(self, user):
+        self.set_secure_cookie('user_id', str(user.key().id()))
+
+    def logout(self):
+        self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
+
+    def initialize(self, *a, **kw):
+        webapp2.RequestHandler.initialize(self, *a, **kw)
+        uid = self.read_secure_cookie('user_id')
+        self.user = uid and User.by_id(int(uid))
+
 # Step 1: Basic Blog
 def blog_key(name = 'default'):
     return db.Key.from_path('blogs', name)
@@ -106,6 +127,7 @@ def users_key(group = 'default'):
 
 class User(db.Model):
     name = db.StringProperty(required = True)
+    pw_hash = db.StringProperty(required = True)
     email = db.StringProperty()
 
     @classmethod
@@ -119,10 +141,17 @@ class User(db.Model):
 
     @classmethod
     def register(cls, name, pw, email = None):
+        pw_hash = make_pw_hash(name, pw)
         return User(parent = users_key(),
                     name = name,
                     pw_hash = pw_hash,
                     email = email)
+
+    @classmethod
+    def login(cls, name, pw):
+        u = cls.by_name(name)
+        if u and valid_pw(name, pw, u.pw_hash):
+            return u
 
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
