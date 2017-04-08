@@ -1,11 +1,9 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html>
-  <head>
-    <title>Unit 4 Signup</title>
-  </head>
-
-  <body>
-    <h2>Welcome, {{username}}!</h2>
-  </body>
-</html>
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <h2>Welcome, {{username}}</h2>
+        </div>
+    </div>
+{% endblock %}
