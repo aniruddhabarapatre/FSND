@@ -16,7 +16,7 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
 
 secret = "Udacity"
 
-def render_str(self, template, **params):
+def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
@@ -46,6 +46,7 @@ class Handler(webapp2.RequestHandler):
         self.response.out.write(*a, **kw)
 
     def render_str(self, template, **params):
+        params['user'] = self.user
         return render_str(template, **params)
 
     def render(self, template, **kw):
@@ -248,7 +249,7 @@ class Login(Handler):
             self.render('login-form.html', error = msg)
 
 # Step 4: Logout
-class Logout(BlogHandler):
+class Logout(Handler):
     def get(self):
         self.logout()
         self.redirect('/signup')
