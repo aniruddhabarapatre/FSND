@@ -3,21 +3,25 @@
 <head>
     <meta name="description" content="Udacity FSND Multi user blog project">
     <meta name="author" content="//aniruddhabarapatre.com">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport"
+        content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>Project Blog</title>
 
     <link href="https://fonts.googleapis.com/css?family=Lato:100,300" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
     <div class="container">
         <header class="row">
             <div class="col-sm-3">
-                <img class="img-responsive brand-logo" src="./images/100x100" alt="brand logo">
+                <img class="img-responsive brand-logo" src="/images/100x100" alt="brand logo">
             </div>
             <div class="col-sm-9 text-right text-uppercase">
                 <h1 class="title-super text-thin">Aniruddha Barapatre</h1>
@@ -25,9 +29,29 @@
             </div>
         </header>
 
+        <nav class="row">
+            <div class="col-md-8">
+                {% if user %}
+                    <p class="navbar-text">Signed in as {{ user.name }}</p>
+                    <a href="/blog/newpost" class="btn btn-default navbar-btn">New Post</a>
+                    <a href="/logout" class="btn btn-warning navbar-btn">Logout</a>
+                {% else %}
+                    <a href="/login" class="btn btn-primary navbar-btn">Login</a>
+                    <a href="/signup" class="btn btn-default navbar-btn">Signup</a>
+                {% endif %}
+            </div>
+        </nav>
+
         {% block content %}
         {% endblock %}
     </div>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script
+        src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+    <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
 </body>
 </html>

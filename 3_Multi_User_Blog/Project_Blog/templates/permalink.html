@@ -2,4 +2,12 @@
 
 {% block content %}
     {{post.render() | safe}}
+
+
+    {% if user %}
+        <div class="btn-group col-sm-12">
+            <a href="/blog/{{ post.key().id() }}/editpost" class="btn btn-default"> Edit </a>
+            <a href="/blog/deletepost" class="btn btn-danger"> Delete </a>
+        </div>
+    {% endif %}
 {% endblock %}

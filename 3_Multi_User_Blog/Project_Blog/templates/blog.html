@@ -2,7 +2,7 @@
 
 {% block content %}
 
-{% if post == Null %}
+{% if posts == Null %}
     <div class="row">
         <div class="col-sm-12">
             <p>There are no posts yet.</p>
@@ -13,7 +13,9 @@
 {% for post in posts %}
     <div class="row">
         <div class="col-sm-12">
-            <h3 class="text-left">{{post.subject}}</h3>
+            <h3 class="text-left">
+                <a href="/blog/{{ post.key().id() }}">{{ post.subject }} </a>
+            </h3>
             <p class="text-right">{{post.created.strftime("%b %d, %Y")}}</p>
             <hr>
             <p>{{post.content | safe}}</p>
