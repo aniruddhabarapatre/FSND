@@ -169,6 +169,20 @@ class EditPage(Handler):
         elif self.request.get("cancel"):
             self.redirect("/blog/%s" % str(post_value))
 
+class DeletePage(Handler):
+    def get(self, post_id):
+        post_value = post_id.split("/")[0]
+        key = db.Key.from_path('Post', int(post_value), parent=blog_key())
+        post = db.get(key)
+
+        if not post:
+            self.error(404)
+            return
+
+        if self.user:
+            post.delete()
+            self.redirect("/blog")
+
 # Step 2: User Registration
 def users_key(group = 'default'):
     return db.Key.from_path('users', group)
@@ -293,7 +307,7 @@ class Login(Handler):
 class Logout(Handler):
     def get(self):
         self.logout()
-        self.redirect('/signup')
+        self.redirect('/blog')
 
 # Routes
 app = webapp2.WSGIApplication([
@@ -301,6 +315,7 @@ app = webapp2.WSGIApplication([
     ('/blog/newpost', Newpost),
     ('/blog/([0-9]+)', PostPage),
     ('/blog/([0-9]+/editpost)', EditPage),
+    ('/blog/([0-9]+/deletepost)', DeletePage),
     ('/signup', Register),
     ('/welcome', Welcome),
     ('/login', Login),

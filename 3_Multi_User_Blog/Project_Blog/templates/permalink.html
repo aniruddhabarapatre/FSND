@@ -7,7 +7,7 @@
     {% if user %}
         <div class="btn-group col-sm-12">
             <a href="/blog/{{ post.key().id() }}/editpost" class="btn btn-default"> Edit </a>
-            <a href="/blog/deletepost" class="btn btn-danger"> Delete </a>
+            <a href="/blog/{{ post.key().id() }}/deletepost" class="btn btn-danger"> Delete </a>
         </div>
     {% endif %}
 {% endblock %}
