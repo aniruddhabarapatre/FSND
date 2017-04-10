@@ -183,6 +183,15 @@ class DeletePage(Handler):
             post.delete()
             self.redirect("/blog")
 
+class Likes(db.Model):
+    post = db.IntegerProperty(required = True)
+    user = db.IntegerProperty(required = True)
+
+    @classmethod
+    def count_by_post(cls, post_id):
+        likes = db.GqlQuery("Select * From Likes Where post = int(post_id)")
+        return likes.count()
+
 # Step 2: User Registration
 def users_key(group = 'default'):
     return db.Key.from_path('users', group)

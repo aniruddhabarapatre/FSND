@@ -9,5 +9,9 @@
             <a href="/blog/{{ post.key().id() }}/editpost" class="btn btn-default"> Edit </a>
             <a href="/blog/{{ post.key().id() }}/deletepost" class="btn btn-danger"> Delete </a>
         </div>
+    {% else %}
+        <div class="btn-group col-sm-12">
+            <a href="/blog/{{ post.key().id() }}/likepost" class="btn btn-default"> Like </a>
+        </div>
     {% endif %}
 {% endblock %}
