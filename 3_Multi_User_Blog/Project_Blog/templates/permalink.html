@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {{post.render() | safe}}
+    {{ post.render() | safe }}
 
 
-    {% if user %}
+    {% if user and post.user.name == user.name %}
         <div class="btn-group col-sm-12">
             <a href="/blog/{{ post.key().id() }}/editpost" class="btn btn-default"> Edit </a>
             <a href="/blog/{{ post.key().id() }}/deletepost" class="btn btn-danger"> Delete </a>
