@@ -77,7 +77,7 @@ class Handler(webapp2.RequestHandler):
 def blog_key(name = 'default'):
     return db.Key.from_path('blogs', name)
 
-# moved here from Step 2 for referenceProperty
+# moved here from Step 2 for ReferenceProperty
 def users_key(group = 'default'):
     return db.Key.from_path('users', group)
 
@@ -219,12 +219,39 @@ class DeletePage(Handler):
 
 class Likes(db.Model):
     post = db.IntegerProperty(required = True)
-    user = db.IntegerProperty(required = True)
+    user = db.StringProperty(required = True)
 
     @classmethod
     def count_by_post(cls, post_id):
         likes = db.GqlQuery("Select * From Likes Where post = int(post_id)")
         return likes.count()
+
+class LikePost(Handler):
+    def get(self, post_id):
+        post_value = post_id.split("/")[0]
+        key = db.Key.from_path('Post', int(post_value), parent=blog_key())
+        post = db.get(key)
+        #like_user = db.GqlQuery("Select user From Likes Where post = post_value")
+        like_user = Likes.all().filter('post =', int(post_value)).get()
+
+        if self.user and self.user.name != like_user:
+            like = Likes(post = post.key().id(), user = self.user.name)
+            like.put()
+            self.redirect("/blog/%s" % str(post_value))
+        else:
+            error_msg = "You can only like post once."
+            self.redirect("/blog/%s" % str(post_value), like_error = error_msg)
+
+class Comments(db.Model):
+    user = db.ReferenceProperty(User, required = True)
+    post = db.ReferenceProperty(Post, required = True)
+    comment = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+
+    @classmethod
+    def by_id(cls, cid):
+        comments = Comments.all().filter("post =", id).order('created')
+        return comments
 
 # Step 2: User Registration
 
@@ -328,6 +355,7 @@ app = webapp2.WSGIApplication([
     ('/blog/([0-9]+)', PostPage),
     ('/blog/([0-9]+/editpost)', EditPage),
     ('/blog/([0-9]+/deletepost)', DeletePage),
+    ('/blog/([0-9]+/likepost)', LikePost),
     ('/signup', Register),
     ('/welcome', Welcome),
     ('/login', Login),

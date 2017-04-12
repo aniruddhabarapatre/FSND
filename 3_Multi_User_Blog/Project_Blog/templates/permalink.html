@@ -11,7 +11,9 @@
         </div>
     {% else %}
         <div class="btn-group col-sm-12">
-            <a href="/blog/{{ post.key().id() }}/likepost" class="btn btn-default"> Like </a>
+            <a href="/blog/{{ post.key().id() }}/likepost"
+                class="btn btn-default"> Like {{ likes.count_by_post(post.key().id()) }}</a>
+            <span class="text-danger">{{ like_error }}</span>
         </div>
     {% endif %}
 {% endblock %}
