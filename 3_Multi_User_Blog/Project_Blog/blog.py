@@ -120,6 +120,11 @@ class Post(db.Model):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p=self)
 
+    @property
+    def likes(self):
+        likes = Likes.all().filter('post =', int(self.key().id()))
+        return likes.count()
+
 class BlogPage(Handler):
     def get(self):
         posts = db.GqlQuery("Select * From Post Order by created DESC limit 10")
@@ -221,26 +226,24 @@ class Likes(db.Model):
     post = db.IntegerProperty(required = True)
     user = db.StringProperty(required = True)
 
-    @classmethod
-    def count_by_post(cls, post_id):
-        likes = db.GqlQuery("Select * From Likes Where post = int(post_id)")
-        return likes.count()
 
 class LikePost(Handler):
     def get(self, post_id):
+        print post_id
         post_value = post_id.split("/")[0]
+        print post_value
         key = db.Key.from_path('Post', int(post_value), parent=blog_key())
         post = db.get(key)
-        #like_user = db.GqlQuery("Select user From Likes Where post = post_value")
-        like_user = Likes.all().filter('post =', int(post_value)).get()
+        #like_user = db.GqlQuery("Select user From Likes Where post = int(post_value)")
+        like_user = Likes.all().filter('post =', int(post_value)).filter('user = ', self.user.name).get()
 
-        if self.user and self.user.name != like_user:
+        if self.user and not like_user:
             like = Likes(post = post.key().id(), user = self.user.name)
             like.put()
             self.redirect("/blog/%s" % str(post_value))
         else:
             error_msg = "You can only like post once."
-            self.redirect("/blog/%s" % str(post_value), like_error = error_msg)
+            self.redirect("/blog/%s?like_error=%s" % str(post_value), error_msg)
 
 class Comments(db.Model):
     user = db.ReferenceProperty(User, required = True)
@@ -252,6 +255,23 @@ class Comments(db.Model):
     def by_id(cls, cid):
         comments = Comments.all().filter("post =", id).order('created')
         return comments
+
+class EditComment(Handler):
+    def post(self, post_id):
+        post_value = post_id.split("/")[0]
+        key = db.Key.from_path('Post', int(post_value), parent=blog_key())
+        post = db.get(key)
+
+        content = self.request.get("comment_content")
+        user = User.by_name(self.user.name)
+
+        if subject and content:
+            post = Post(parent=blog_key(), subject = subject, content = content, user = user)
+            post.put()
+            self.redirect("/blog/%s" % str(post.key().id()))
+        else:
+            error = "We need both subject and content."
+            self.render_newpost(subject, content, error)
 
 # Step 2: User Registration
 
@@ -356,6 +376,7 @@ app = webapp2.WSGIApplication([
     ('/blog/([0-9]+/editpost)', EditPage),
     ('/blog/([0-9]+/deletepost)', DeletePage),
     ('/blog/([0-9]+/likepost)', LikePost),
+    ('/blog/([0-9]+/comment)', EditComment),
     ('/signup', Register),
     ('/welcome', Welcome),
     ('/login', Login),

@@ -12,8 +12,31 @@
     {% else %}
         <div class="btn-group col-sm-12">
             <a href="/blog/{{ post.key().id() }}/likepost"
-                class="btn btn-default"> Like {{ likes.count_by_post(post.key().id()) }}</a>
+                class="btn btn-default"> Like ( {{ post.likes }} )</a>
             <span class="text-danger">{{ like_error }}</span>
+            <!-- 6454683010859008 -->
         </div>
+    {% endif %}
+
+    <hr>
+
+    {% if user %}
+        <form method="post">
+            <p class="bg-danger">
+                {{ comment_error }}
+            </p>
+            <div class="form-group">
+                <label for="comment" class="control-label">Add a comment: </label>
+                <textarea class="form-control" name="comment_content" rows="15">{{ comment }}</textarea>
+            </label>
+
+            <br>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-default" name="comment"
+                        id="comment" value="comment">Submit</button>
+                </div>
+            </div>
+        </form>
     {% endif %}
 {% endblock %}
