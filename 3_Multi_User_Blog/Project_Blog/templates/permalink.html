@@ -5,16 +5,21 @@
 
 
     {% if user and post.user.name == user.name %}
-        <div class="btn-group col-sm-12">
-            <a href="/blog/{{ post.key().id() }}/editpost" class="btn btn-default"> Edit </a>
-            <a href="/blog/{{ post.key().id() }}/deletepost" class="btn btn-danger"> Delete </a>
+        <br>
+        <div class="row">
+            <div class="btn-group col-sm-12">
+                <a href="/blog/{{ post.key().id() }}/editpost" class="btn btn-default"> Edit </a>
+                <a href="/blog/{{ post.key().id() }}/deletepost" class="btn btn-danger"> Delete </a>
+            </div>
         </div>
     {% else %}
-        <div class="btn-group col-sm-12">
-            <a href="/blog/{{ post.key().id() }}/likepost"
-                class="btn btn-default"> Like ( {{ post.likes }} )</a>
-            <span class="text-danger">{{ like_error }}</span>
-            <!-- 6454683010859008 -->
+        <br>
+        <div class="row">
+            <div class="btn-group col-sm-12">
+                <a href="/blog/{{ post.key().id() }}/likepost"
+                    class="btn btn-default"> Like ( {{ post.likes }} )</a>
+                <span class="text-danger">{{ like_error }}</span>
+            </div>
         </div>
     {% endif %}
 
@@ -22,21 +27,36 @@
 
     {% if user %}
         <form method="post">
-            <p class="bg-danger">
-                {{ comment_error }}
-            </p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <p class="bg-danger text-center">
+                        {{ comment_error }}
+                    </p>
+                </div>
+            </div>
+
             <div class="form-group">
-                <label for="comment" class="control-label">Add a comment: </label>
-                <textarea class="form-control" name="comment_content" rows="15">{{ comment }}</textarea>
+                <label for="save_comment" class="control-label">Add a comment: </label>
+                <textarea class="form-control" name="comment_content" rows="3">{{ comment }}</textarea>
             </label>
 
             <br>
             <div class="form-group">
                 <div class="col-sm-12">
-                    <button type="submit" class="btn btn-default" name="comment"
-                        id="comment" value="comment">Submit</button>
+                    <button type="submit" class="btn btn-primary" name="save_comment"
+                        id="save_comment" value="save_comment">Save comment</button>
                 </div>
             </div>
         </form>
     {% endif %}
+
+    {% for comment in comments %}
+        <div class="row">
+            <div class="col-sm-12">
+                <p>{{ comment.comment | safe }}</p>
+                <br>
+                <span>Comment by {{ comment.user }} on {{ comment.created.strftime("%b %d, %Y") }}</span>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}

@@ -16,9 +16,9 @@
             <h3 class="text-left">
                 <a href="/blog/{{ post.key().id() }}">{{ post.subject }} </a>
             </h3>
-            <p class="text-right">{{post.created.strftime("%b %d, %Y")}}</p>
+            <p class="text-right">{{ post.created.strftime("%b %d, %Y") }}</p>
             <hr>
-            <p>{{post.content | safe}}</p>
+            <p>{{ post.content | safe }}</p>
         </div>
     </div>
 {% endfor %}

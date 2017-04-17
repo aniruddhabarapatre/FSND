@@ -118,7 +118,7 @@ class Post(db.Model):
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
-        return render_str("post.html", p=self)
+        return render_str("post.html", p = self)
 
     @property
     def likes(self):
@@ -160,12 +160,31 @@ class PostPage(Handler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
+        comments = Comments.by_id(post)
 
         if not post:
             self.error(404)
             return
 
-        self.render("permalink.html", post=post)
+        self.render("permalink.html", post=post, comments = comments)
+
+    def post(self, post_id):
+        key = db.Key.from_path('Post', int(post_id), parent = blog_key())
+        post = db.get(key)
+
+        comments = Comments.by_id(post)
+
+        if self.request.get("save_comment"):
+            content = self.request.get("comment_content")
+            user = User.by_name(self.user.name)
+
+            if content:
+                newComment = Comments(user = user, post = post, comment = content)
+                newComment.put()
+                self.redirect("/blog/%s" % str(post.key().id()))
+            else:
+                comment_error = "Please enter text in comment box."
+                self.render("permalink.html", post = post, comment_error = comment_error)
 
 # Step 5: Additional Action Items
 class EditPage(Handler):
@@ -226,15 +245,11 @@ class Likes(db.Model):
     post = db.IntegerProperty(required = True)
     user = db.StringProperty(required = True)
 
-
 class LikePost(Handler):
     def get(self, post_id):
-        print post_id
         post_value = post_id.split("/")[0]
-        print post_value
         key = db.Key.from_path('Post', int(post_value), parent=blog_key())
         post = db.get(key)
-        #like_user = db.GqlQuery("Select user From Likes Where post = int(post_value)")
         like_user = Likes.all().filter('post =', int(post_value)).filter('user = ', self.user.name).get()
 
         if self.user and not like_user:
@@ -251,6 +266,10 @@ class Comments(db.Model):
     comment = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
 
+    def render(self):
+        self._render_text = self.content.replace('\n', '<br>')
+        return render_str("comments.html", comments = self)
+
     @classmethod
     def by_id(cls, cid):
         comments = Comments.all().filter("post =", id).order('created')
@@ -262,16 +281,17 @@ class EditComment(Handler):
         key = db.Key.from_path('Post', int(post_value), parent=blog_key())
         post = db.get(key)
 
-        content = self.request.get("comment_content")
-        user = User.by_name(self.user.name)
+        # if self.request.get("save_comment"):
+        #     content = self.request.get("comment_content")
+        #     user = User.by_name(self.user.name)
 
-        if subject and content:
-            post = Post(parent=blog_key(), subject = subject, content = content, user = user)
-            post.put()
-            self.redirect("/blog/%s" % str(post.key().id()))
-        else:
-            error = "We need both subject and content."
-            self.render_newpost(subject, content, error)
+        #     if user and content:
+        #         post = Post(parent=blog_key(), subject = subject, content = content, user = user)
+        #         post.put()
+        #         self.redirect("/blog/%s" % str(post.key().id()))
+        #     else:
+        #         error = "We need both subject and content."
+        #         self.render_newpost(subject, content, error)
 
 # Step 2: User Registration
 
