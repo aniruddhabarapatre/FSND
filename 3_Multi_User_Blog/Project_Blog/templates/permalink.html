@@ -56,7 +56,7 @@
             <div class="col-sm-12">
                 <p>{{ comment.comment | safe }}</p>
                 <br>
-                <span>Comment by {{ comment.user}} on {{ comment.created.strftime("%b %d, %Y") }}</span>
+                <span>Comment by {{ comment.user.name}} on {{ comment.created.strftime("%b %d, %Y") }}</span>
             </div>
         </div>
     {% endfor %}
