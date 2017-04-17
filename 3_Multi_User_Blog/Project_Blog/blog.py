@@ -160,7 +160,7 @@ class PostPage(Handler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
-        comments = Comments.by_id(post)
+        comments = Comments.all().filter("post = ", post)
 
         if not post:
             self.error(404)
