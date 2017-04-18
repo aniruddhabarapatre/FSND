@@ -186,6 +186,14 @@ class PostPage(Handler):
                 comment_error = "Please enter text in comment box."
                 self.render("permalink.html", post = post, comment_error = comment_error)
 
+        if self.request.get("delete_comment"):
+            if post.user.key().id() == User.by_name(self.user.name).key().id():
+                db.delete(key)
+                self.redirect("/blog/%s" % str(post.key().id()))
+            else:
+                delete_error = "Failed to delete comment"
+                self.render("permalink.html", post = post, delete_error = delete_error)
+
 # Step 5: Additional Action Items
 class EditPage(Handler):
     def get(self, post_id):
