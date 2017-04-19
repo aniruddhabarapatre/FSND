@@ -172,7 +172,7 @@ class PostPage(Handler):
         key = db.Key.from_path('Post', int(post_id), parent = blog_key())
         post = db.get(key)
 
-        comments = Comments.by_id(post)
+        comments = Comments.by_post(post)
 
         if self.request.get("save_comment"):
             content = self.request.get("comment_content")
@@ -279,27 +279,46 @@ class Comments(db.Model):
         return render_str("comments.html", comments = self)
 
     @classmethod
-    def by_id(cls, cid):
+    def by_post(cls, cid):
         comments = Comments.all().filter("post =", id).order('created')
         return comments
 
+    @classmethod
+    def by_id(cls, cid):
+        comment = Comments.all().filter("ID =", cid)
+        return comment
+
 class EditComment(Handler):
-    def post(self, post_id):
-        post_value = post_id.split("/")[0]
-        key = db.Key.from_path('Post', int(post_value), parent=blog_key())
+    def get(self, post_id, comment_id):
+        print comment_id
+        key = db.Key.from_path('Post', int(post_id), parent = blog_key())
         post = db.get(key)
 
-        # if self.request.get("save_comment"):
-        #     content = self.request.get("comment_content")
-        #     user = User.by_name(self.user.name)
+        comment = Comments.get_by_id(int(comment_id))
+        print comment
+        if self.user and comment:
+            if comment.user.name == self.user.name:
+                self.render("editcomment.html", comment = comment)
+            else:
+                self.redirect("/blog/%s" % str(post.key().id()))
 
-        #     if user and content:
-        #         post = Post(parent=blog_key(), subject = subject, content = content, user = user)
-        #         post.put()
-        #         self.redirect("/blog/%s" % str(post.key().id()))
-        #     else:
-        #         error = "We need both subject and content."
-        #         self.render_newpost(subject, content, error)
+    def post(self, post_id, comment_id):
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+
+        if self.request.get("save"):
+            comment = Comments.get_by_id(int(comment_id))
+            if self.user and comment:
+                if comment.user.name == self.user.name:
+                    comment.comment = self.request.get("comment")
+                    comment.put()
+                    self.redirect("/blog/%s" % str(post.key().id()))
+                else:
+                    save_error = "Only the author of the comment can make changes."
+                    self.render("editcomment.html", comment = comment, error = save_error)
+
+        if self.request.get("cancel"):
+            self.redirect("/blog/%s" % str(post.key().id()))
 
 # Step 2: User Registration
 
@@ -404,7 +423,7 @@ app = webapp2.WSGIApplication([
     ('/blog/([0-9]+/editpost)', EditPage),
     ('/blog/([0-9]+/deletepost)', DeletePage),
     ('/blog/([0-9]+/likepost)', LikePost),
-    ('/blog/([0-9]+/comment)', EditComment),
+    ('/blog/([0-9]+)/([0-9]+)/editcomment', EditComment),
     ('/signup', Register),
     ('/welcome', Welcome),
     ('/login', Login),
