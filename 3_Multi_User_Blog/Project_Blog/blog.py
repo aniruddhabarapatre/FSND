@@ -152,11 +152,11 @@ class Newpost(Handler):
         if self.user:
             self.render_newpost()
         else:
-            self.redirect("/login")
+            return self.redirect("/login")
 
     def post(self):
         if not self.user:
-            self.redirect('/blog')
+            return self.redirect('/blog')
 
         subject = self.request.get("subject")
         content = self.request.get("content")
@@ -166,7 +166,7 @@ class Newpost(Handler):
             post = Post(parent=blog_key(), subject=subject,
                         content=content, user=user)
             post.put()
-            self.redirect("/blog/%s" % str(post.key().id()))
+            return self.redirect("/blog/%s" % str(post.key().id()))
         else:
             error = "We need both subject and content."
             self.render_newpost(subject, content, error)
@@ -197,16 +197,18 @@ class PostPage(Handler):
             if content:
                 newComment = Comments(user=user, post=post, comment=content)
                 newComment.put()
-                self.redirect("/blog/%s" % str(post.key().id()))
+                return self.redirect("/blog/%s" % str(post.key().id()))
             else:
                 comment_error = "Please enter text in comment box."
                 self.render("permalink.html", post=post,
                             comment_error=comment_error)
 
         if self.request.get("delete_comment"):
-            if post.user.key().id() == User.by_name(self.user.name).key().id():
-                db.delete(key)
-                self.redirect("/blog/%s" % str(post.key().id()))
+            comment_id = self.request.get("comment_id")
+            comment = Comments.get_by_id(int(comment_id))
+            if comment.user.name == self.user.name:
+                db.delete(comment)
+                return self.redirect("/blog/%s" % str(post.key().id()))
             else:
                 delete_error = "Failed to delete comment"
                 self.render("permalink.html", post=post,
@@ -228,7 +230,7 @@ class EditPage(Handler):
             self.render("editpost.html", post=post)
         else:
             error_msg = 'You can only edit your own post.'
-            self.redirect("/blog", error=error_msg)
+            return self.redirect("/blog", error=error_msg)
 
     def post(self, post_id):
         post_value = post_id.split("/")[0]
@@ -247,13 +249,13 @@ class EditPage(Handler):
                 post.subject = subject
                 post.content = content
                 post.put()
-                self.redirect("/blog/%s" % str(post.key().id()))
+                return self.redirect("/blog/%s" % str(post.key().id()))
             else:
                 error = "We need both subject and content."
                 self.render("editpost.html", subject=subject,
                             content=content, error=error)
         elif self.request.get("cancel"):
-            self.redirect("/blog/%s" % str(post_value))
+            return self.redirect("/blog/%s" % str(post_value))
 
 
 class DeletePage(Handler):
@@ -268,7 +270,7 @@ class DeletePage(Handler):
 
         if self.user:
             post.delete()
-            self.redirect("/blog")
+            return self.redirect("/blog")
 
 
 class Likes(db.Model):
@@ -288,11 +290,11 @@ class LikePost(Handler):
         if self.user and not like_user:
             like = Likes(post=post.key().id(), user=self.user.name)
             like.put()
-            self.redirect("/blog/%s" % str(post_value))
+            return self.redirect("/blog/%s" % str(post_value))
         else:
             error_msg = "You can only like post once."
-            self.redirect("/blog/%s?like_error=%s" % str(post_value),
-                          error_msg)
+            return self.redirect("/blog/%s?like_error=%s" % str(post_value),
+                                 error_msg)
 
 
 class Comments(db.Model):
@@ -318,17 +320,15 @@ class Comments(db.Model):
 
 class EditComment(Handler):
     def get(self, post_id, comment_id):
-        print comment_id
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
 
         comment = Comments.get_by_id(int(comment_id))
-        print comment
         if self.user and comment:
             if comment.user.name == self.user.name:
                 self.render("editcomment.html", comment=comment)
             else:
-                self.redirect("/blog/%s" % str(post.key().id()))
+                return self.redirect("/blog/%s" % str(post.key().id()))
 
     def post(self, post_id, comment_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
@@ -340,15 +340,15 @@ class EditComment(Handler):
                 if comment.user.name == self.user.name:
                     comment.comment = self.request.get("comment")
                     comment.put()
-                    self.redirect("/blog/%s" % str(post.key().id()))
+                    return self.redirect("/blog/%s" % str(post.key().id()))
                 else:
-                    save_error =
-                    "Only the author of the comment can make changes."
+                    save_error = \
+                        "Only the author of the comment can make changes."
                     self.render("editcomment.html", comment=comment,
                                 error=save_error)
 
         if self.request.get("cancel"):
-            self.redirect("/blog/%s" % str(post.key().id()))
+            return self.redirect("/blog/%s" % str(post.key().id()))
 
 
 # Step 2: User Registration
@@ -422,7 +422,7 @@ class Register(Signup):
             u.put()
 
             self.login(u)
-            self.redirect('/welcome')
+            return self.redirect('/welcome')
 
 
 class Welcome(Handler):
@@ -430,7 +430,7 @@ class Welcome(Handler):
         if self.user:
             self.render('welcome.html', username=self.user.name)
         else:
-            self.redirect('/signup')
+            return self.redirect('/signup')
 
 
 # Step 3: Login
@@ -445,7 +445,7 @@ class Login(Handler):
         u = User.login(username, password)
         if u:
             self.login(u)
-            self.redirect('/welcome')
+            return self.redirect('/welcome')
         else:
             msg = 'Invalid login'
             self.render('login-form.html', error=msg)
@@ -455,7 +455,7 @@ class Login(Handler):
 class Logout(Handler):
     def get(self):
         self.logout()
-        self.redirect('/blog')
+        return self.redirect('/blog')
 
 # Routes
 app = webapp2.WSGIApplication([

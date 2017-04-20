@@ -70,7 +70,7 @@
                             <a class="btn btn-default" href="/blog/{{ post.key().id() }}/{{ comment.key().id() }}/editcomment">Edit</a>
                         </div>
                         <div class="col-sm-2 text-left">
-                            <input type="hidden" name="commentToDelete" value="{{ comment.key().id() }}">
+                            <input type="hidden" name="comment_id" value="{{ comment.key().id() }}">
                             <button type="submit" class="btn btn-danger" name="delete_comment" id="delete_comment" value="delete_comment">Delete Comment</button>
                         </div>
                     {% endif %}
