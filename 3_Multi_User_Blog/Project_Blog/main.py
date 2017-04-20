@@ -2,8 +2,8 @@ import os
 import webapp2
 import jinja2
 
-from controllers import Handler, BlogPage, NewPost, PostPage, EditPage
-from controllers import DeletePage, Login, Logout, EditComment, LikePost
+from controllers import Handler, BlogPage, NewPost, PostPage, EditPage, Signup, Welcome
+from controllers import DeletePage, Login, Logout, EditComment, LikePost, Register
 from models import User, Post, Likes, Comments
 
 
