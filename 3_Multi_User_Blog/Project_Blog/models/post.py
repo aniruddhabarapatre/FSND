@@ -1,5 +1,7 @@
 from google.appengine.ext import db
+
 from user import User
+from controllers.handler import *
 
 
 class Post(db.Model):

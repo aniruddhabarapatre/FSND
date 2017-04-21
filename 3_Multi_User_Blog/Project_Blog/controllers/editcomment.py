@@ -6,6 +6,10 @@ from models.comments import Comments
 from google.appengine.ext import db
 
 
+def blog_key(name='default'):
+    return db.Key.from_path('blogs', name)
+
+
 class EditComment(Handler):
     def get(self, post_id, comment_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())

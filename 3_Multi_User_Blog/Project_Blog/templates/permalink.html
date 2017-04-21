@@ -3,7 +3,6 @@
 {% block content %}
     {{ post.render() | safe }}
 
-
     {% if user and post.user.name == user.name %}
         <br>
         <div class="row">

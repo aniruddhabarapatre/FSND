@@ -6,6 +6,10 @@ from models.likes import Likes
 from google.appengine.ext import db
 
 
+def blog_key(name='default'):
+    return db.Key.from_path('blogs', name)
+
+
 class LikePost(Handler):
     def get(self, post_id):
         post_value = post_id.split("/")[0]
@@ -14,6 +18,10 @@ class LikePost(Handler):
         like_user = Likes.all().filter('post =',
                                        int(post_value)).filter(
                                        'user = ', self.user.name).get()
+
+        if post.user.key().id() == User.by_name(self.user.name).key().id():
+            like_error = "You cannot like your own post"
+            self.render("permalink.html", post=post, error=like_error)
 
         if self.user and not like_user:
             like = Likes(post=post.key().id(), user=self.user.name)

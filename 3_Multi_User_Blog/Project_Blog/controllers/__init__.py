@@ -14,4 +14,3 @@ from register import Register
 from signup import Signup
 from welcome import Welcome
 from utils import *
-
