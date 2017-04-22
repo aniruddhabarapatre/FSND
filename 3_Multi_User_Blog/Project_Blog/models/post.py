@@ -1,6 +1,7 @@
 from google.appengine.ext import db
 
 from user import User
+from models.likes import Likes
 from controllers.handler import *
 
 

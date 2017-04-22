@@ -1,5 +1,6 @@
 from controllers.handler import Handler
 from models.post import Post
+from controllers.utils import *
 
 from google.appengine.ext import db
 

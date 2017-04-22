@@ -4,6 +4,14 @@ import hmac
 from string import letters
 import re
 
+import os
+import webapp2
+import jinja2
+
+template_dir = os.path.join(os.path.dirname(__file__), '../templates')
+jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
+                               autoescape=True)
+
 secret = "Udacity"
 
 
@@ -52,3 +60,8 @@ EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
 
 def valid_email(email):
     return not email or EMAIL_RE.match(email)
+
+
+def render_str(template, **params):
+    t = jinja_env.get_template(template)
+    return t.render(params)
