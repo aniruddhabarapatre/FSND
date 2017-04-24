@@ -36,4 +36,3 @@ class NewPost(Handler):
         else:
             error = "We need both subject and content."
             self.render_newpost(subject, content, error)
-
