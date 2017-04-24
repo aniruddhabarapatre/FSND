@@ -21,4 +21,7 @@ class PostPage(Handler):
             self.error(404)
             return
 
+        if not self.user:
+            return self.redirect('/blog')
+
         self.render("permalink.html", post=post, comments=comments)

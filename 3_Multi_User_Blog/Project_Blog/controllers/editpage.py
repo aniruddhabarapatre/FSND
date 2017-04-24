@@ -26,6 +26,9 @@ class EditPage(Handler):
             return self.redirect("/blog", error=error_msg)
 
     def post(self, post_id):
+        if not self.user:
+            return self.redirect('/blog')
+
         post_value = post_id.split("/")[0]
         key = db.Key.from_path('Post', int(post_value), parent=blog_key())
         post = db.get(key)

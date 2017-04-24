@@ -19,9 +19,12 @@ class DeletePage(Handler):
             self.error(404)
             return
 
-        if post.user.key().id() == User.by_name(self.user.name).key().id():
-            post.delete()
-            return self.redirect("/blog")
+        if self.user:
+            if post.user.key().id() == User.by_name(self.user.name).key().id():
+                post.delete()
+                return self.redirect("/blog")
+            else:
+                delete_error = "Failed to delete post."
+                self.render("permalink.html", post=post, error=delete_error)
         else:
-            delete_error = "Failed to delete post."
-            self.render("permalink.html", post=post, error=delete_error)
+            return self.redirect('/blog')
