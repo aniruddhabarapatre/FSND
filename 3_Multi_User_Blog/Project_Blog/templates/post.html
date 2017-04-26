@@ -2,9 +2,9 @@
     <div class="post-heading">
         <h2> {{ p.subject }} </h2>
 
-        <div class="post-date">
-            {{ p.created.strftime("%b %d, %Y") }}
-        </div>
+        <p class="post-date">
+            Created by {{ p.user.name }} on {{ p.created.strftime("%b %d, %Y") }}
+        </p>
     </div>
 
     <div class="post-content">

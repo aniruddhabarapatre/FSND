@@ -11,7 +11,9 @@ def blog_key(name='default'):
 
 
 class DeleteComment(Handler):
-    def post(self, post_id, comment_id):
+    def post(self):
+        post_id = self.request.get("post_id")
+        comment_id = self.request.get("comment_id")
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
 
@@ -20,14 +22,13 @@ class DeleteComment(Handler):
             return
 
         if self.user:
-            if self.request.get("delete_comment"):
-                comment = Comments.get_by_id(int(comment_id))
-                if comment is not None and comment.user.name == self.user.name:
-                    db.delete(comment)
-                    return self.redirect("/blog/%s" % str(post.key().id()))
-                else:
-                    delete_error = "Failed to delete comment"
-                    self.render("permalink.html", post=post,
-                                delete_error=delete_error)
+            comment = Comments.get_by_id(int(comment_id))
+            if comment is not None and comment.user.name == self.user.name:
+                db.delete(comment)
+                return self.redirect("/blog/%s" % str(post.key().id()))
+            else:
+                delete_error = "Failed to delete comment"
+                self.render("permalink.html", post=post,
+                            delete_error=delete_error)
         else:
             return self.redirect("/blog")

@@ -11,7 +11,8 @@ def blog_key(name='default'):
 
 
 class SaveComment(Handler):
-    def post(self, post_id):
+    def post(self):
+        post_id = self.request.get("post_id")
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
 
@@ -21,8 +22,6 @@ class SaveComment(Handler):
 
         if self.user:
             comment = self.request.get("comment_content")
-            print "Save comment"
-            print comment
             user = User.by_name(self.user.name)
 
             if comment:
