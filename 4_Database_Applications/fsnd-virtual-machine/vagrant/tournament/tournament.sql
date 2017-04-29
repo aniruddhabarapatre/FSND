@@ -13,4 +13,9 @@ CREATE database tournament;
 CREATE TABLE players (
     pid serial PRIMARY KEY,
     name text NOT NULL
-)
+);
+
+# Matches table to save player matches information
+CREATE TABLE matches (
+
+);
