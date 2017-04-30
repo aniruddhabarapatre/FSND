@@ -13,19 +13,31 @@ def connect():
 
 def deleteMatches():
     """Remove all the match records from the database."""
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("TRUNCATE matches CASCADE;")
+    conn.commit()
+    conn.close()
 
 
 def deletePlayers():
     """Remove all the player records from the database."""
     conn = connect()
-    c = conn.cursor()
-    c.execute("DELETE INTO players;")
+    cur = conn.cursor()
+    cur.execute("TRUNCATE players CASCADE;")
     conn.commit()
     conn.close()
 
 
 def countPlayers():
     """Returns the number of players currently registered."""
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("SELECT count(*) FROM players;")
+    player_count = cur.fetchone()[0]
+    conn.commit()
+    conn.close()
+    return player_count
 
 
 def registerPlayer(name):
@@ -38,8 +50,8 @@ def registerPlayer(name):
       name: the player's full name (need not be unique).
     """
     conn = connect()
-    c = conn.cursor()
-    c.execute("INSERT INTO players values (%s);", (name,))
+    cur = conn.cursor()
+    cur.execute("INSERT INTO players(name) values (%s);", (name,))
     conn.commit()
     conn.close()
 
@@ -66,6 +78,13 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO matches VALUES (%s, %s);",
+        (winner, loser))
+    conn.commit()
+    conn.close()
 
 
 def swissPairings():
