@@ -20,8 +20,8 @@ CREATE TABLE players (
 -- Matches table to save player matches information
 CREATE TABLE matches (
     mid serial PRIMARY KEY,
-    winner int REFERENCES players(pid) NOT NULL,
-    loser int REFERENCES players(pid) NOT NULL
+    winner int REFERENCES players(pid),
+    loser int REFERENCES players(pid)
 );
 
 CREATE VIEW v_standings AS

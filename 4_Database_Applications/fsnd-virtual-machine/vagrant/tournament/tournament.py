@@ -88,7 +88,7 @@ def reportMatch(winner, loser):
     conn = connect()
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO matches VALUES (%s, %s);",
+        "INSERT INTO matches(winner, loser) VALUES (%s, %s);",
         (winner, loser))
     conn.commit()
     conn.close()
@@ -98,7 +98,7 @@ def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
 
     Assuming that there are an even number of players registered, each player
-    appears exactly once in the pairings.  Each player is paired with another
+    appears exactly once in the pairings. Each player is paired with another
     player with an equal or nearly-equal win record, that is, a player adjacent
     to him or her in the standings.
 
@@ -109,5 +109,17 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("SELECT pid, name FROM v_standings ORDER BY wins;")
+    list = cur.fetchall()
 
+    pairs = []
+    players = len(list)
 
+    for i in range(0, players, 2):
+        pair = list[i][0], list[i][1], list[i + 1][0], list[i + 1][1]
+        pairs.append(pair)
+
+    conn.close()
+    return pairs
