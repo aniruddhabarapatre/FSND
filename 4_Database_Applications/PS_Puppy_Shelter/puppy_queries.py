@@ -36,6 +36,13 @@ def q3_all_puppies_by_weight():
     for puppy in results:
         print puppy[0], puppy[1]
 
-# q1_all_puppies_asc_order()
-# q2_all_puppies_less_than_6months()
+def q4_all_puppies_by_shelter():
+    """Query all puppies grouped by the shelter in which they are staying"""
+    results = session.query(Shelter, func.count(Puppy.id)).join(Puppy).group_by(Shelter.id).all()
+    for puppy in results:
+        print puppy[0].name, puppy[1]
+
+q1_all_puppies_asc_order()
+q2_all_puppies_less_than_6months()
 q3_all_puppies_by_weight()
+q4_all_puppies_by_shelter()
