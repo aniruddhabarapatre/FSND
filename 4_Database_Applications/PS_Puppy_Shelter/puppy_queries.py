@@ -29,5 +29,13 @@ def q2_all_puppies_less_than_6months():
     for puppy in results:
         print "{name}: {dob}".format(name=puppy[0], dob=puppy[1])
 
-#q1_all_puppies_asc_order()
-q2_all_puppies_less_than_6months()
+
+def q3_all_puppies_by_weight():
+    """Query all puppies by ascending weight"""
+    results = session.query(Puppy.name, Puppy.weight).order_by(Puppy.weight.asc()).all()
+    for puppy in results:
+        print puppy[0], puppy[1]
+
+# q1_all_puppies_asc_order()
+# q2_all_puppies_less_than_6months()
+q3_all_puppies_by_weight()
