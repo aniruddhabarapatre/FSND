@@ -24,6 +24,7 @@ class webserverHandler(SimpleHTTPRequestHandler):
 
                 output = ""
                 output += "<html><body>"
+                output += "<a href = '/restaurants/new' > Make a New Restaurant Here </a></br></br>"
                 for restaurant in results:
                     output += restaurant.name
                     output += "<br>"
@@ -36,27 +37,43 @@ class webserverHandler(SimpleHTTPRequestHandler):
                 print output
                 return
 
+            # Create new restaurant
+            if self.path.endswith("/restaurants/new"):
+                results = session.query(Restaurant).all()
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+
+                output = ""
+                output += "<html><body>"
+                output += "<h1>Make a New Restaurant</h1>"
+                output += "<form method = 'POST' enctype='multipart/form-data' action = '/restaurants/new'>"
+                output += "<input name = 'restaurantname' type = 'text'> "
+                output += "<input type='submit' value='Create'>"
+                output += "</form></body></html>"
+                self.wfile.write(output)
+                return
+
         except IOError:
             self.send_error(404, "File not found: %s" % self.path)
 
     def do_POST(self):
         try:
-            self.send_response(301)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-            ctype, pdict = cgi.parse_header(
-                self.headers.getheader('content-type'))
-            if ctype == 'multipart/form-data':
-                fields = cgi.parse_multipart(self.rfile, pdict)
-                messagecontent = fields.get('message')
-            output = ""
-            output += "<html><body>"
-            output += " <h2> Okay, how about this: </h2>"
-            output += "<h1> %s </h1>" % messagecontent[0]
-            output += '''<form method='POST' enctype='multipart/form-data' action='/hello'><h2>What would you like me to say?</h2><input name="message" type="text" ><input type="submit" value="Submit"> </form>'''
-            output += "</body></html>"
-            self.wfile.write(output)
-            print output
+            if self.path.endswith("/restaurants/new"):
+                ctype, pdict = cgi.parse_header(
+                    self.headers.getheader('content-type'))
+                if ctype == 'multipart/form-data':
+                    fields = cgi.parse_multipart(self.rfile, pdict)
+                    messagecontent = fields.get('restaurantname')
+
+                    newRestaurant = Restaurant(name=messagecontent[0])
+                    session.add(newRestaurant)
+                    session.commit()
+
+                    self.send_response(301)
+                    self.send_header('Content-type', 'text/html')
+                    self.send_header('Location', '/restaurants')
+                    self.end_headers()
         except:
             pass
 
