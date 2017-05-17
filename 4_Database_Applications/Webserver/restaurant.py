@@ -30,7 +30,7 @@ class webserverHandler(SimpleHTTPRequestHandler):
                     output += "<br>"
                     output += "<a href ='/restaurants/%s/edit' >Edit </a> " % restaurant.id
                     output += "</br>"
-                    output += "<a href =' #'> Delete </a>"
+                    output += "<a href ='/restaurants/%s/delete'> Delete </a>" % restaurant.id
                     output += "<br><br><br>"
                 output += "</body></html>"
                 self.wfile.write(output)
@@ -74,6 +74,23 @@ class webserverHandler(SimpleHTTPRequestHandler):
                     output += "</form></body></html>"
                     self.wfile.write(output)
 
+            # Deleting a restaurant
+            if self.path.endswith("/delete"):
+                restaurant_id = self.path.split('/')[2]
+                results = session.query(Restaurant).filter_by(id=restaurant_id).one()
+                if results:
+                    self.send_response(200)
+                    self.send_header('Content-type', 'text/html')
+                    self.end_headers()
+
+                    output = ""
+                    output += "<html><body>"
+                    output += "<h1>Are you sure you want to delete %s?</h1>" % results.name
+                    output += "<form method = 'POST' enctype='multipart/form-data' action = '/restaurants/%s/delete'>" % restaurant_id
+                    output += "<input type='submit' value='Delete'>"
+                    output += "</form></body></html>"
+                    self.wfile.write(output)
+
         except IOError:
             self.send_error(404, "File not found: %s" % self.path)
 
@@ -113,6 +130,19 @@ class webserverHandler(SimpleHTTPRequestHandler):
                         self.send_header('Content-type', 'text/html')
                         self.send_header('Location', '/restaurants')
                         self.end_headers()
+
+            if self.path.endswith("/delete"):
+                restaurant_id = self.path.split('/')[2]
+                restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+
+                if restaurant:
+                    session.delete(restaurant)
+                    session.commit()
+
+                    self.send_response(301)
+                    self.send_header('Content-type', 'text/html')
+                    self.send_header('Location', '/restaurants')
+                    self.end_headers()
 
         except:
             pass
