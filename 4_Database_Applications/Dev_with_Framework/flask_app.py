@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 app = Flask(__name__)
 
 
@@ -27,6 +27,7 @@ def newMenuItem(restaurant_id):
         newItem = MenuItem(name = request.form['name'], restaurant_id = restaurant_id)
         session.add(newItem)
         session.commit()
+        flash("New menu item created!!!")
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     else:
         render_template('newmenuitem.html', restaurant_id=restaurant_id)
@@ -57,5 +58,6 @@ def deleteMenuItem(restaurant_id, menu_id):
         return render_template('deletemenuitem.html', i=itemToDelete)
 
 if __name__ == '__main__':
+    app.secret_key = 'Udacity'
     app.debug = True
     app.run(host = '0.0.0.0', port = 8082)
