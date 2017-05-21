@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Restaurant</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
   <h1>{{ restaurant.name }}</h1>
@@ -14,6 +15,7 @@
       {% endfor %}
     </ul>
   {% endif %}
+  {% endwith %}
 
   {% for i in items %}
     {{ i.name }}
